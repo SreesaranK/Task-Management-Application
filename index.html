@@ -9,33 +9,63 @@
 <body>
 
 <div class="container">
+
     <h1>Task Management Dashboard</h1>
 
     <div class="stats">
+
         <div class="card">
             <h2 id="totalTasks">0</h2>
-            <p>Total Tasks</p>
+            <p>Today's Tasks</p>
         </div>
 
         <div class="card">
             <h2 id="completedTasks">0</h2>
-            <p>Completed</p>
+            <p>Completed Today</p>
         </div>
 
         <div class="card">
             <h2 id="pendingTasks">0</h2>
-            <p>Pending</p>
+            <p>Pending Today</p>
         </div>
+
     </div>
 
     <div class="input-group">
-        <input type="text" id="taskInput" placeholder="Enter a task">
-        <button onclick="addTask()">Add Task</button>
+
+        <input
+            type="text"
+            id="taskInput"
+            placeholder="Enter Task"
+        >
+
+        <input
+            type="date"
+            id="taskDate"
+        >
+
+        <button onclick="addTask()">
+            Add Task
+        </button>
+
     </div>
 
-    <ul id="taskList"></ul>
+    <div class="task-sections">
+
+        <h2 class="section-title">Today's Tasks</h2>
+        <ul id="todayTasks"></ul>
+
+        <h2 class="section-title">Upcoming Tasks</h2>
+        <ul id="upcomingTasks"></ul>
+
+        <h2 class="section-title">Previous Tasks</h2>
+        <ul id="pastTasks"></ul>
+
+    </div>
+
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>

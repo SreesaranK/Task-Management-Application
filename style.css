@@ -2,28 +2,29 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body{
-    background:#f4f6f9;
+    background:linear-gradient(135deg,#667eea,#764ba2);
     min-height:100vh;
     padding:20px;
 }
 
 .container{
-    max-width:700px;
+    max-width:900px;
     margin:auto;
-    background:#fff;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    background:#ffffff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.15);
 }
 
 h1{
     text-align:center;
-    margin-bottom:25px;
-    color:#222;
+    margin-bottom:30px;
+    color:#1f2937;
+    font-size:2rem;
 }
 
 .stats{
@@ -34,45 +35,73 @@ h1{
 }
 
 .card{
-    background:#eef2ff;
+    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    color:white;
     padding:20px;
-    border-radius:10px;
+    border-radius:15px;
     text-align:center;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
 }
 
 .card h2{
-    color:#2563eb;
-    margin-bottom:5px;
+    font-size:2rem;
+    margin-bottom:8px;
 }
 
 .input-group{
     display:flex;
     gap:10px;
-    margin-bottom:20px;
+    margin-bottom:30px;
+}
+
+.input-group input{
+    flex:1;
 }
 
 input{
-    flex:1;
     padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
+    border:none;
+    border-radius:10px;
+    background:#f3f4f6;
     font-size:16px;
+}
+
+input:focus{
+    outline:none;
+    box-shadow:0 0 0 3px rgba(79,70,229,0.2);
 }
 
 button{
     padding:12px 18px;
-    background:#2563eb;
-    color:white;
     border:none;
-    border-radius:8px;
+    border-radius:10px;
     cursor:pointer;
+    color:white;
+    font-weight:600;
+    transition:0.3s;
 }
 
 button:hover{
-    opacity:0.9;
+    transform:translateY(-2px);
 }
 
-#taskList{
+.input-group button{
+    background:#4f46e5;
+}
+
+.section-title{
+    margin:25px 0 15px;
+    color:#374151;
+    font-size:1.2rem;
+}
+
+#todayTasks,
+#upcomingTasks,
+#pastTasks{
     list-style:none;
 }
 
@@ -80,30 +109,61 @@ button:hover{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:12px;
-    background:#f8fafc;
-    margin-bottom:10px;
-    border-radius:8px;
+    padding:15px;
+    margin-bottom:12px;
+    background:white;
+    border-left:5px solid #4f46e5;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
 .completed{
     text-decoration:line-through;
-    color:gray;
+    color:#9ca3af;
 }
 
-.actions button{
-    margin-left:5px;
+.actions{
+    display:flex;
+    gap:8px;
 }
 
 .complete-btn{
-    background:#16a34a;
+    background:#10b981;
 }
 
 .delete-btn{
-    background:#dc2626;
+    background:#ef4444;
 }
 
-@media(max-width:600px){
+.complete-btn:hover,
+.delete-btn:hover{
+    opacity:0.9;
+}
+
+.date-header{
+    margin-top:20px;
+    margin-bottom:10px;
+    padding:8px 12px;
+    background:#eef2ff;
+    color:#4338ca;
+    border-radius:8px;
+    font-size:0.95rem;
+    font-weight:600;
+}
+
+.date-group{
+    list-style:none;
+    margin-bottom:15px;
+}
+
+/* Completed task appearance */
+.task-item .completed::before{
+    content:"✓ ";
+    color:#10b981;
+    font-weight:bold;
+}
+
+@media(max-width:768px){
 
     .stats{
         grid-template-columns:1fr;
@@ -113,13 +173,18 @@ button:hover{
         flex-direction:column;
     }
 
-    button{
+    .input-group button{
         width:100%;
     }
 
     .task-item{
         flex-direction:column;
-        gap:10px;
+        gap:12px;
         text-align:center;
+    }
+
+    .actions{
+        width:100%;
+        justify-content:center;
     }
 }
