@@ -1,30 +1,31 @@
-# To-Do List Application
+# Task Management Dashboard
 
-## Project Overview
-A responsive task management application built using HTML, CSS, and JavaScript.
+A simple and responsive Task Management Dashboard built using HTML, CSS, and JavaScript.
 
-## Features Implemented
-- Add Task
-- Delete Task
-- Mark Task as Complete
-- Task Counter
-- Local Storage Support
+## Features
+
+- Add tasks with a date
+- View Today's Tasks
+- Mark tasks as completed
+- Delete tasks
+- View Upcoming Tasks
+- View Previous Tasks
+- Task statistics (Total, Completed, Pending)
+- Data saved using Local Storage
+- Mobile-friendly design
 
 ## Technologies Used
+
 - HTML
 - CSS
 - JavaScript
-- Git
-- GitHub
 
-## Challenges Faced
-- Understanding DOM manipulation
-- Managing task states
-- Implementing Local Storage
+## Live Demo
 
-## Learnings and Key Takeaways
-- Event Handling
-- DOM Manipulation
-- JavaScript Functions
-- Local Storage
-- Git and GitHub Workflow
+https://sreesarank.github.io/Task-Management-Application/
+
+## Author
+
+Sreesaran K
+
+GitHub: https://github.com/SreesaranK
