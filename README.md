@@ -1,31 +1,21 @@
-# Task Management Dashboard
-
-A simple and responsive Task Management Dashboard built using HTML, CSS, and JavaScript.
-
-## Features
-
-- Add tasks with a date
-- View Today's Tasks
-- Mark tasks as completed
-- Delete tasks
-- View Upcoming Tasks
-- View Previous Tasks
-- Task statistics (Total, Completed, Pending)
-- Data saved using Local Storage
-- Mobile-friendly design
-
-## Technologies Used
-
-- HTML
-- CSS
-- JavaScript
-
-## Live Demo
-
+**Task Management App**
+A simple task management web app built using HTML, CSS, and JavaScript. It helps users add, track, and manage daily tasks with priority and date/time support.
+**Live Demo**
 https://sreesarank.github.io/Task-Management-Application/
-
-## Author
-
-Sreesaran K
-
+**Features**
+Add new tasks with date, time, and priority
+View tasks by Today, Upcoming, and Past
+Mark tasks as completed
+Delete tasks
+Task priority (High / Medium / Low)
+Live task statistics
+Data saved using LocalStorage
+Fully responsive design
+**Built With**
+HTML
+CSS
+JavaScript
+LocalStorage
+**Author**
+Sreesaran
 GitHub: https://github.com/SreesaranK
