@@ -1,22 +1,20 @@
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+/* SAVE */
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+/* STATS */
 function updateStats() {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const todayTasks = tasks.filter(
-        task => task.date === today
-    );
+    const todayTasks = tasks.filter(task => task.date === today);
 
     const total = todayTasks.length;
 
-    const completed = todayTasks.filter(
-        task => task.completed
-    ).length;
+    const completed = todayTasks.filter(task => task.completed).length;
 
     const pending = total - completed;
 
@@ -25,24 +23,31 @@ function updateStats() {
     document.getElementById("pendingTasks").textContent = pending;
 }
 
+/* SAFE TIME PARSER */
 function convertTo24Hour(time) {
 
-    let [clock, period] = time.split(" ");
+    if (!time || typeof time !== "string") {
+        return "00:00";
+    }
+
+    const parts = time.split(" ");
+    if (parts.length < 2) return "00:00";
+
+    let [clock, period] = parts;
+
+    if (!clock || !period) return "00:00";
+
     let [hour, minute] = clock.split(":");
 
-    hour = parseInt(hour);
+    hour = parseInt(hour || "0");
 
-    if (period === "PM" && hour !== 12) {
-        hour += 12;
-    }
+    if (period === "PM" && hour !== 12) hour += 12;
+    if (period === "AM" && hour === 12) hour = 0;
 
-    if (period === "AM" && hour === 12) {
-        hour = 0;
-    }
-
-    return `${hour.toString().padStart(2, "0")}:${minute}`;
+    return `${String(hour).padStart(2, "0")}:${minute || "00"}`;
 }
 
+/* RENDER */
 function renderTasks() {
 
     const todayList = document.getElementById("todayTasks");
@@ -60,16 +65,21 @@ function renderTasks() {
 
     const sortedTasks = [...tasks].sort((a, b) => {
 
-        if (a.date !== b.date) {
-            return a.date.localeCompare(b.date);
+        const dateA = a.date || "";
+        const dateB = b.date || "";
+
+        if (dateA !== dateB) {
+            return dateA.localeCompare(dateB);
         }
 
-        if (a.completed !== b.completed) {
-            return a.completed - b.completed;
+        if ((a.completed || false) !== (b.completed || false)) {
+            return (a.completed || false) - (b.completed || false);
         }
 
-        return convertTo24Hour(a.time)
-            .localeCompare(convertTo24Hour(b.time));
+        const timeA = convertTo24Hour(a.time);
+        const timeB = convertTo24Hour(b.time);
+
+        return timeA.localeCompare(timeB);
     });
 
     sortedTasks.forEach(task => {
@@ -88,7 +98,7 @@ function renderTasks() {
 
         const title = document.createElement("div");
         title.className = "task-title";
-        title.textContent = task.text;
+        title.textContent = task.text || "Untitled Task";
 
         if (task.completed) {
             title.classList.add("completed");
@@ -96,16 +106,16 @@ function renderTasks() {
 
         const meta = document.createElement("div");
         meta.className = "task-meta";
-
-        meta.textContent =
-            `📅 ${task.date} | 🕒 ${task.time}`;
+        meta.textContent = `📅 ${task.date || "-"} | 🕒 ${task.time || "-"}`;
 
         const priority = document.createElement("span");
 
-        priority.className =
-            `priority-badge priority-${task.priority.toLowerCase()}`;
+        const priorityValue = (task.priority || "Medium").toString();
 
-        priority.textContent = task.priority;
+        priority.className =
+            `priority-badge priority-${priorityValue.toLowerCase()}`;
+
+        priority.textContent = priorityValue;
 
         details.appendChild(title);
         details.appendChild(meta);
@@ -122,10 +132,8 @@ function renderTasks() {
             completeBtn.textContent = "Done";
             completeBtn.className = "complete-btn";
 
-            completeBtn.onclick = function () {
-
+            completeBtn.onclick = () => {
                 tasks[originalIndex].completed = true;
-
                 saveTasks();
                 renderTasks();
                 updateStats();
@@ -135,10 +143,8 @@ function renderTasks() {
             deleteBtn.textContent = "Delete";
             deleteBtn.className = "delete-btn";
 
-            deleteBtn.onclick = function () {
-
+            deleteBtn.onclick = () => {
                 tasks.splice(originalIndex, 1);
-
                 saveTasks();
                 renderTasks();
                 updateStats();
@@ -153,10 +159,8 @@ function renderTasks() {
             removeBtn.textContent = "❌";
             removeBtn.className = "delete-btn";
 
-            removeBtn.onclick = function () {
-
+            removeBtn.onclick = () => {
                 tasks.splice(originalIndex, 1);
-
                 saveTasks();
                 renderTasks();
                 updateStats();
@@ -167,7 +171,7 @@ function renderTasks() {
 
         li.appendChild(actions);
 
-        const formattedDate = new Date(task.date)
+        const formattedDate = new Date(task.date || today)
             .toLocaleDateString("en-IN", {
                 day: "numeric",
                 month: "short",
@@ -175,24 +179,23 @@ function renderTasks() {
             });
 
         if (task.date === today) {
-
             todayList.appendChild(li);
 
         } else if (task.date > today) {
 
             if (!upcomingGroups[formattedDate]) {
 
-                const dateHeader = document.createElement("h3");
-                dateHeader.className = "date-header";
-                dateHeader.textContent = formattedDate;
+                const h3 = document.createElement("h3");
+                h3.className = "date-header";
+                h3.textContent = formattedDate;
 
-                const groupList = document.createElement("ul");
-                groupList.className = "date-group";
+                const ul = document.createElement("ul");
+                ul.className = "date-group";
 
-                upcomingGroups[formattedDate] = groupList;
+                upcomingGroups[formattedDate] = ul;
 
-                upcomingList.appendChild(dateHeader);
-                upcomingList.appendChild(groupList);
+                upcomingList.appendChild(h3);
+                upcomingList.appendChild(ul);
             }
 
             upcomingGroups[formattedDate].appendChild(li);
@@ -201,17 +204,17 @@ function renderTasks() {
 
             if (!pastGroups[formattedDate]) {
 
-                const dateHeader = document.createElement("h3");
-                dateHeader.className = "date-header";
-                dateHeader.textContent = formattedDate;
+                const h3 = document.createElement("h3");
+                h3.className = "date-header";
+                h3.textContent = formattedDate;
 
-                const groupList = document.createElement("ul");
-                groupList.className = "date-group";
+                const ul = document.createElement("ul");
+                ul.className = "date-group";
 
-                pastGroups[formattedDate] = groupList;
+                pastGroups[formattedDate] = ul;
 
-                pastList.appendChild(dateHeader);
-                pastList.appendChild(groupList);
+                pastList.appendChild(h3);
+                pastList.appendChild(ul);
             }
 
             pastGroups[formattedDate].appendChild(li);
@@ -219,60 +222,27 @@ function renderTasks() {
     });
 }
 
+/* ADD TASK */
 function addTask() {
 
-    const taskInput = document.getElementById("taskInput");
-    const dateInput = document.getElementById("taskDate");
+    const taskText = document.getElementById("taskInput").value.trim();
+    const taskDate = document.getElementById("taskDate").value;
+    const time = document.getElementById("taskTime").value;
+    const period = document.getElementById("taskPeriod").value;
+    const priority = document.getElementById("taskPriority").value || "Medium";
 
-    const timeInput =
-        document.getElementById("taskTime");
-
-    const periodInput =
-        document.getElementById("taskPeriod");
-
-    const priorityInput =
-        document.getElementById("taskPriority");
-
-    const taskText = taskInput.value.trim();
-    const taskDate = dateInput.value;
-
-    const selectedTime = timeInput.value;
-    const period = periodInput.value;
-
-    const priority = priorityInput.value;
-
-    if (taskText === "") {
-        alert("Please enter a task");
-        return;
-    }
-
-    if (taskDate === "") {
-        alert("Please select a date");
-        return;
-    }
-
-    if (
-        selectedTime === "" ||
-        period === ""
-    ) {
-        alert("Please select time");
-        return;
-    }
+    if (!taskText) return alert("Enter task");
+    if (!taskDate) return alert("Select date");
+    if (!time || !period) return alert("Select time");
 
     const today = new Date().toISOString().split("T")[0];
 
-    if (taskDate < today) {
-        alert("Past dates are not allowed");
-        return;
-    }
-
-    const taskTime =
-        `${selectedTime} ${period}`;
+    if (taskDate < today) return alert("Past date not allowed");
 
     tasks.push({
         text: taskText,
         date: taskDate,
-        time: taskTime,
+        time: `${time} ${period}`,
         priority: priority,
         completed: false
     });
@@ -281,18 +251,19 @@ function addTask() {
     renderTasks();
     updateStats();
 
-    taskInput.value = "";
-    dateInput.value = "";
-
-    timeInput.value = "";
-    periodInput.value = "";
-
-    priorityInput.value = "Medium";
+    document.getElementById("taskInput").value = "";
+    document.getElementById("taskDate").value = "";
+    document.getElementById("taskTime").value = "";
+    document.getElementById("taskPeriod").value = "";
+    document.getElementById("taskPriority").value = "Medium";
 }
 
+/* INIT */
 const today = new Date().toISOString().split("T")[0];
-
 document.getElementById("taskDate").min = today;
 
 renderTasks();
 updateStats();
+
+/* GLOBAL FIX FOR GITHUB PAGES */
+window.addTask = addTask;
