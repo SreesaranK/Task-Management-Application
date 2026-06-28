@@ -6,27 +6,33 @@
 }
 
 body{
-    background:linear-gradient(135deg,#667eea,#764ba2);
+    background: radial-gradient(circle at top, #eef2ff, #f8fafc);
     min-height:100vh;
     padding:20px;
+    color:#111827;
 }
 
+/* MAIN CONTAINER */
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
     background:#ffffff;
     padding:30px;
-    border-radius:20px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.15);
+    border-radius:22px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.08);
+    border:1px solid #eef2f7;
 }
 
+/* TITLE */
 h1{
     text-align:center;
     margin-bottom:30px;
-    color:#1f2937;
-    font-size:2rem;
+    color:#111827;
+    font-size:2.1rem;
+    letter-spacing:0.5px;
 }
 
+/* STATS */
 .stats{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -35,16 +41,17 @@ h1{
 }
 
 .card{
-    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     color:white;
     padding:20px;
-    border-radius:15px;
+    border-radius:16px;
     text-align:center;
-    transition:0.3s;
+    transition:0.25s ease;
+    box-shadow:0 10px 20px rgba(99,102,241,0.2);
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-6px);
 }
 
 .card h2{
@@ -52,37 +59,58 @@ h1{
     margin-bottom:8px;
 }
 
+/* INPUT AREA */
 .input-group{
     display:flex;
     gap:10px;
     margin-bottom:30px;
+    align-items:center;
+    flex-wrap:wrap;
 }
 
-.input-group input{
+.input-group input,
+.input-group select{
     flex:1;
 }
 
-input{
+input,
+select{
     padding:12px;
-    border:none;
-    border-radius:10px;
-    background:#f3f4f6;
-    font-size:16px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    background:#f9fafb;
+    font-size:15px;
+    transition:0.2s;
 }
 
-input:focus{
+input:focus,
+select:focus{
     outline:none;
-    box-shadow:0 0 0 3px rgba(79,70,229,0.2);
+    border-color:#6366f1;
+    box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+    background:#ffffff;
 }
 
+/* TIME GROUP */
+.time-group{
+    display:flex;
+    gap:8px;
+    flex:1.3;
+}
+
+.time-group select{
+    flex:1;
+}
+
+/* BUTTONS */
 button{
     padding:12px 18px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     cursor:pointer;
     color:white;
     font-weight:600;
-    transition:0.3s;
+    transition:0.2s ease;
 }
 
 button:hover{
@@ -90,15 +118,17 @@ button:hover{
 }
 
 .input-group button{
-    background:#4f46e5;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
 }
 
+/* SECTION TITLE */
 .section-title{
     margin:25px 0 15px;
     color:#374151;
-    font-size:1.2rem;
+    font-size:1.1rem;
 }
 
+/* TASK LIST */
 #todayTasks,
 #upcomingTasks,
 #pastTasks{
@@ -111,10 +141,32 @@ button:hover{
     align-items:center;
     padding:15px;
     margin-bottom:12px;
-    background:white;
-    border-left:5px solid #4f46e5;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    background:#ffffff;
+    border-left:5px solid #6366f1;
+    border-radius:14px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.06);
+    transition:0.2s;
+}
+
+.task-item:hover{
+    transform:scale(1.01);
+}
+
+.task-details{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.task-title{
+    font-size:16px;
+    font-weight:600;
+    color:#111827;
+}
+
+.task-meta{
+    font-size:13px;
+    color:#6b7280;
 }
 
 .completed{
@@ -122,9 +174,14 @@ button:hover{
     color:#9ca3af;
 }
 
+/* ACTION BUTTONS */
 .actions{
     display:flex;
-    gap:8px;
+    gap:10px;
+}
+
+.actions button{
+    min-width:85px;
 }
 
 .complete-btn{
@@ -140,29 +197,124 @@ button:hover{
     opacity:0.9;
 }
 
+/* DATE HEADER */
 .date-header{
     margin-top:20px;
     margin-bottom:10px;
-    padding:8px 12px;
+    padding:10px 14px;
     background:#eef2ff;
     color:#4338ca;
-    border-radius:8px;
-    font-size:0.95rem;
+    border-radius:10px;
+    font-size:0.9rem;
     font-weight:600;
 }
 
-.date-group{
-    list-style:none;
-    margin-bottom:15px;
+/* PRIORITY */
+.priority-badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    width:fit-content;
 }
 
-/* Completed task appearance */
-.task-item .completed::before{
-    content:"✓ ";
-    color:#10b981;
-    font-weight:bold;
+.priority-high{
+    background:#fee2e2;
+    color:#dc2626;
 }
 
+.priority-medium{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.priority-low{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.completed-task{
+    border-left:5px solid #10b981;
+    opacity:0.9;
+}
+
+/* HISTORY */
+.history-controls{
+    display:flex;
+    gap:10px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+}
+
+.history-controls input,
+.history-controls select{
+    flex:1;
+}
+
+.history-group{
+    margin-bottom:25px;
+}
+
+.history-task{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    margin-bottom:10px;
+    background:white;
+    border-left:5px solid #6366f1;
+    border-radius:14px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.06);
+}
+
+.history-details{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.history-title{
+    font-weight:600;
+}
+
+.history-meta{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.empty-message{
+    text-align:center;
+    padding:30px;
+    color:#6b7280;
+}
+
+/* HISTORY BUTTON */
+.history-button-container{
+    display:flex;
+    justify-content:center;
+    margin-top:30px;
+    margin-bottom:10px;
+}
+
+.history-btn{
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color:white;
+    padding:14px 24px;
+    border:none;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 10px 20px rgba(99,102,241,0.2);
+    transition:0.2s;
+}
+
+.history-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* MOBILE */
 @media(max-width:768px){
 
     .stats{
@@ -173,18 +325,39 @@ button:hover{
         flex-direction:column;
     }
 
+    .input-group input,
+    .input-group select,
+    .time-group,
     .input-group button{
         width:100%;
     }
 
     .task-item{
         flex-direction:column;
+        align-items:flex-start;
         gap:12px;
-        text-align:center;
     }
 
     .actions{
         width:100%;
-        justify-content:center;
+        justify-content:flex-start;
+    }
+
+    .history-controls{
+        flex-direction:column;
+    }
+
+    .history-controls button{
+        width:100%;
+    }
+
+    .history-task{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .history-btn{
+        width:100%;
     }
 }

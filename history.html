@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task History</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Task History</h1>
+
+    <div class="history-controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search tasks..."
+            onkeyup="renderHistory()"
+        >
+
+        <select id="filterDays" onchange="renderHistory()">
+            <option value="all">All Tasks</option>
+            <option value="3">Last 3 Days</option>
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+        </select>
+
+        <button
+    class="history-btn"
+    onclick="window.location.href='index.html'"
+>
+    ← Back to Dashboard
+</button>
+
+    </div>
+
+    <div id="historyContainer"></div>
+
+</div>
+
+<script src="history.js"></script>
+
+</body>
+</html>
