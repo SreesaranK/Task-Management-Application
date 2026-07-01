@@ -4,36 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task History</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="container">
 
-    <h1>Task History</h1>
+    <div class="dashboard-header">
+
+        <div>
+            <h1>Task History</h1>
+            <p class="dashboard-subtitle">
+            </p>
+        </div>
+
+        <button id="themeToggle" class="theme-btn">
+            🌙 Dark Mode
+        </button>
+
+    </div>
 
     <div class="history-controls">
 
         <input
             type="text"
             id="searchInput"
-            placeholder="Search tasks..."
+            placeholder="🔍 Search task..."
             onkeyup="renderHistory()"
         >
 
-        <select id="filterDays" onchange="renderHistory()">
-            <option value="all">All Tasks</option>
+        <select
+            id="dateFilter"
+            onchange="toggleDatePicker(); renderHistory();"
+        >
+            <option value="all">📅 All Dates</option>
+            <option value="today">Today</option>
+            <option value="specific">Specific Date</option>
             <option value="3">Last 3 Days</option>
             <option value="7">Last 7 Days</option>
             <option value="30">Last 30 Days</option>
         </select>
 
+        <input
+            type="date"
+            id="customDate"
+            style="display:none;"
+            onchange="renderHistory()"
+        >
+
+        <select
+            id="priorityFilter"
+            onchange="renderHistory()"
+        >
+            <option value="all">🎯 All Priorities</option>
+            <option value="High">🔴 High</option>
+            <option value="Medium">🟡 Medium</option>
+            <option value="Low">🟢 Low</option>
+        </select>
+
+        <select
+            id="statusFilter"
+            onchange="renderHistory()"
+        >
+            <option value="all">📋 All Tasks</option>
+            <option value="completed">✓ Completed</option>
+            <option value="past">Past Tasks</option>
+        </select>
+
+        <select
+            id="sortFilter"
+            onchange="renderHistory()"
+        >
+            <option value="newest">⬇ Newest First</option>
+            <option value="oldest">⬆ Oldest First</option>
+            <option value="high">🔴 High Priority First</option>
+            <option value="low">🟢 Low Priority First</option>
+        </select>
+
         <button
-    class="history-btn"
-    onclick="window.location.href='index.html'"
->
-    ← Back to Dashboard
-</button>
+            class="history-btn"
+            onclick="window.location.href='index.html'"
+        >
+            ← Back to Dashboard
+        </button>
 
     </div>
 

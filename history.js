@@ -1,5 +1,19 @@
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+function toggleDatePicker() {
+
+    const filter =
+        document.getElementById("dateFilter").value;
+
+    const picker =
+        document.getElementById("customDate");
+
+    picker.style.display =
+        filter === "specific"
+        ? "block"
+        : "none";
+}
+
 function renderHistory() {
 
     const container =
@@ -10,30 +24,75 @@ function renderHistory() {
         .value
         .toLowerCase();
 
-    const filterValue =
-        document.getElementById("filterDays")
+    const dateFilter =
+        document.getElementById("dateFilter")
+        .value;
+
+    const priorityFilter =
+        document.getElementById("priorityFilter")
+        .value;
+
+    const statusFilter =
+        document.getElementById("statusFilter")
+        .value;
+
+    const sortFilter =
+        document.getElementById("sortFilter")
         .value;
 
     let filteredTasks = [...tasks];
 
-    // SEARCH
+    const today =
+        new Date().toISOString().split("T")[0];
 
-    if(searchText !== ""){
+    /* SEARCH */
 
-        filteredTasks = filteredTasks.filter(task =>
-            task.text
-            .toLowerCase()
-            .includes(searchText)
-        );
+    if (searchText !== "") {
+
+        filteredTasks = filteredTasks.filter(task => {
+
+            const taskText =
+                (task.text || "")
+                .toLowerCase();
+
+            return taskText.includes(searchText);
+        });
     }
 
-    // DATE FILTER
+    /* HISTORY TASKS ONLY */
 
-    if(filterValue !== "all"){
+    filteredTasks = filteredTasks.filter(task =>
+        task.completed || task.date < today
+    );
 
-        const days = parseInt(filterValue);
+    /* DATE FILTER */
 
-        const today = new Date();
+    if (dateFilter === "today") {
+
+        filteredTasks = filteredTasks.filter(task =>
+            task.date === today
+        );
+
+    }
+    else if (dateFilter === "specific") {
+
+        const selectedDate =
+            document.getElementById("customDate").value;
+
+        if (selectedDate) {
+
+            filteredTasks = filteredTasks.filter(task =>
+                task.date === selectedDate
+            );
+        }
+    }
+    else if (dateFilter !== "all") {
+
+        const days =
+            parseInt(dateFilter);
+
+        const currentDate =
+            new Date();
 
         filteredTasks = filteredTasks.filter(task => {
 
@@ -41,36 +100,89 @@ function renderHistory() {
                 new Date(task.date);
 
             const diffDays =
-                (today - taskDate) /
+                (currentDate - taskDate) /
                 (1000 * 60 * 60 * 24);
 
             return diffDays <= days;
         });
     }
 
-    // SHOW ONLY COMPLETED OR PAST TASKS
+    /* PRIORITY FILTER */
 
-    const today =
-        new Date().toISOString().split("T")[0];
+    if (priorityFilter !== "all") {
 
-    filteredTasks = filteredTasks.filter(task =>
-        task.completed || task.date < today
-    );
+        filteredTasks = filteredTasks.filter(task =>
+            task.priority === priorityFilter
+        );
+    }
 
-    // SORT
+    /* STATUS FILTER */
 
-    filteredTasks.sort((a,b)=>{
+    if (statusFilter === "completed") {
 
-        if(a.date !== b.date){
-            return b.date.localeCompare(a.date);
-        }
+        filteredTasks = filteredTasks.filter(task =>
+            task.completed
+        );
 
-        return a.time.localeCompare(b.time);
-    });
+    }
+    else if (statusFilter === "past") {
+
+        filteredTasks = filteredTasks.filter(task =>
+            !task.completed && task.date < today
+        );
+    }
+
+    /* SORT */
+
+    const priorityOrder = {
+        High: 3,
+        Medium: 2,
+        Low: 1
+    };
+
+    if (sortFilter === "newest") {
+
+        filteredTasks.sort((a, b) => {
+
+            if (a.date !== b.date) {
+                return new Date(b.date) - new Date(a.date);
+            }
+
+            return b.time.localeCompare(a.time);
+        });
+
+    }
+    else if (sortFilter === "oldest") {
+
+        filteredTasks.sort((a, b) => {
+
+            if (a.date !== b.date) {
+                return new Date(a.date) - new Date(b.date);
+            }
+
+            return a.time.localeCompare(b.time);
+        });
+
+    }
+    else if (sortFilter === "high") {
+
+        filteredTasks.sort((a, b) =>
+            priorityOrder[b.priority] -
+            priorityOrder[a.priority]
+        );
+
+    }
+    else if (sortFilter === "low") {
+
+        filteredTasks.sort((a, b) =>
+            priorityOrder[a.priority] -
+            priorityOrder[b.priority]
+        );
+    }
 
     container.innerHTML = "";
 
-    if(filteredTasks.length === 0){
+    if (filteredTasks.length === 0) {
 
         container.innerHTML = `
             <div class="empty-message">
@@ -87,13 +199,13 @@ function renderHistory() {
 
         const formattedDate =
             new Date(task.date)
-            .toLocaleDateString("en-IN",{
-                day:"numeric",
-                month:"short",
-                year:"numeric"
+            .toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric"
             });
 
-        if(!groups[formattedDate]){
+        if (!groups[formattedDate]) {
 
             const section =
                 document.createElement("div");
@@ -149,7 +261,7 @@ function renderHistory() {
             "history-meta";
 
         meta.textContent =
-            `🕒 ${task.time}`;
+            `📅 ${formattedDate} | 🕒 ${task.time}`;
 
         const priority =
             document.createElement("span");
@@ -158,7 +270,7 @@ function renderHistory() {
             `priority-badge priority-${task.priority.toLowerCase()}`;
 
         priority.textContent =
-            task.priority;
+            `${task.priority} Priority`;
 
         details.appendChild(title);
         details.appendChild(meta);
@@ -168,7 +280,9 @@ function renderHistory() {
             document.createElement("strong");
 
         status.textContent =
-            task.completed ? "✓ Completed" : "Past Task";
+            task.completed
+                ? "✓ Completed"
+                : "Past Task";
 
         taskCard.appendChild(details);
         taskCard.appendChild(status);
@@ -178,4 +292,28 @@ function renderHistory() {
     });
 }
 
+toggleDatePicker();
 renderHistory();
+/* DARK MODE */
+
+const themeToggle =
+    document.getElementById("themeToggle");
+
+if(localStorage.getItem("theme")==="dark"){
+    document.body.classList.add("dark");
+}
+
+if(themeToggle){
+
+    themeToggle.addEventListener("click",()=>{
+
+        document.body.classList.toggle("dark");
+
+        localStorage.setItem(
+            "theme",
+            document.body.classList.contains("dark")
+                ? "dark"
+                : "light"
+        );
+    });
+}
