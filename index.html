@@ -4,13 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management Dashboard</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="container">
 
-    <h1>Task Management Dashboard</h1>
+    <div class="dashboard-header">
+
+        <div>
+            <h1>Task Management Dashboard</h1>
+            <p class="dashboard-subtitle">
+                Organize, prioritize and track your work efficiently
+            </p>
+        </div>
+
+        <button id="themeToggle" class="theme-btn">
+            🌙 Dark Mode
+        </button>
+
+    </div>
 
     <div class="stats">
 
@@ -129,6 +145,7 @@
         <button onclick="addTask()">
             Add Task
         </button>
+
     </div>
 
     <div class="task-sections">
@@ -136,37 +153,37 @@
         <h2 class="section-title">
             Today's Tasks
         </h2>
+
         <ul id="todayTasks"></ul>
 
         <h2 class="section-title">
             Upcoming Tasks
         </h2>
+
         <ul id="upcomingTasks"></ul>
 
         <h2 class="section-title">
             Past Tasks
         </h2>
+
         <ul id="pastTasks"></ul>
 
     </div>
-    <h2 class="section-title">
 
-</h2>
+    <div class="history-button-container">
 
-<div class="history-button-container">
+        <button
+            class="history-btn"
+            onclick="window.location.href='history.html'"
+        >
+            📜 View Task History
+        </button>
 
-    <button
-        class="history-btn"
-        onclick="window.location.href='history.html'"
-    >
-        View Task History
-    </button>
-
-</div>
+    </div>
 
 </div>
 
-<script src="script.js"></script>
+<script src="script.js" defer></script>
 
 </body>
 </html>
