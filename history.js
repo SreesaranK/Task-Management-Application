@@ -1,5 +1,6 @@
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+/* DATE PICKER TOGGLE */
 function toggleDatePicker() {
 
     const filter =
@@ -10,60 +11,116 @@ function toggleDatePicker() {
 
     picker.style.display =
         filter === "specific"
-        ? "block"
-        : "none";
+            ? "block"
+            : "none";
 }
 
+/* CONVERT TIME */
+function convertTo24Hour(time) {
+
+    if (!time) return "00:00";
+
+    const [clock, period] = time.split(" ");
+
+    let [hour, minute] = clock.split(":");
+
+    hour = parseInt(hour);
+
+    if (period === "PM" && hour !== 12) {
+        hour += 12;
+    }
+
+    if (period === "AM" && hour === 12) {
+        hour = 0;
+    }
+
+    return `${String(hour).padStart(2,"0")}:${minute}`;
+}
+
+/* HISTORY RENDER */
 function renderHistory() {
 
     const container =
         document.getElementById("historyContainer");
 
-    const searchText =
+    const taskSearch =
         document.getElementById("searchInput")
         .value
         .toLowerCase();
 
+    const timeSearch =
+        document.getElementById("timeSearch")
+        ? document.getElementById("timeSearch").value.toLowerCase()
+        : "";
+
     const dateFilter =
-        document.getElementById("dateFilter")
-        .value;
+        document.getElementById("dateFilter").value;
 
     const priorityFilter =
-        document.getElementById("priorityFilter")
-        .value;
+        document.getElementById("priorityFilter").value;
 
     const statusFilter =
-        document.getElementById("statusFilter")
-        .value;
+        document.getElementById("statusFilter").value;
 
     const sortFilter =
-        document.getElementById("sortFilter")
-        .value;
-
-    let filteredTasks = [...tasks];
+        document.getElementById("sortFilter").value;
 
     const today =
         new Date().toISOString().split("T")[0];
 
-    /* SEARCH */
+    let filteredTasks = [...tasks];
 
-    if (searchText !== "") {
+    const hasDateSelection = dateFilter === "specific"
+        ? Boolean(document.getElementById("customDate").value)
+        : dateFilter !== "all";
 
-        filteredTasks = filteredTasks.filter(task => {
+    const hasTimeSelection = Boolean(timeSearch.trim());
 
-            const taskText =
-                (task.text || "")
-                .toLowerCase();
-
-            return taskText.includes(searchText);
-        });
+    if (!hasDateSelection && !hasTimeSelection) {
+        container.innerHTML = `
+            <div class="empty-message">
+                Please select a date or enter a time to search
+            </div>
+        `;
+        return;
     }
 
-    /* HISTORY TASKS ONLY */
+    /* SEARCH TASK NAME + TIME */
 
-    filteredTasks = filteredTasks.filter(task =>
-        task.completed || task.date < today
-    );
+    filteredTasks = filteredTasks.filter(task => {
+
+        const taskName =
+            (task.text || "")
+            .toLowerCase();
+
+        const taskTime =
+            (task.time || "")
+            .toLowerCase();
+
+        const normalizedTimeSearch = timeSearch.trim().replace(/[^0-9a-z]/gi, "");
+        const normalizedTaskTime = taskTime.replace(/[^0-9a-z]/gi, "");
+
+        const matchesTask =
+            taskSearch === "" ||
+            taskName.includes(taskSearch);
+
+        const matchesTime =
+            timeSearch === "" ||
+            normalizedTaskTime.includes(normalizedTimeSearch);
+
+        return matchesTask && matchesTime;
+    });
+
+    /* ONLY HISTORY ITEMS */
+
+    filteredTasks = filteredTasks.filter(task => {
+
+        return (
+            task.completed ||
+            task.missed ||
+            task.date < today
+        );
+    });
 
     /* DATE FILTER */
 
@@ -72,8 +129,8 @@ function renderHistory() {
         filteredTasks = filteredTasks.filter(task =>
             task.date === today
         );
-
     }
+
     else if (dateFilter === "specific") {
 
         const selectedDate =
@@ -81,11 +138,13 @@ function renderHistory() {
 
         if (selectedDate) {
 
-            filteredTasks = filteredTasks.filter(task =>
-                task.date === selectedDate
-            );
+            filteredTasks =
+                filteredTasks.filter(task =>
+                    task.date === selectedDate
+                );
         }
     }
+
     else if (dateFilter !== "all") {
 
         const days =
@@ -94,45 +153,51 @@ function renderHistory() {
         const currentDate =
             new Date();
 
-        filteredTasks = filteredTasks.filter(task => {
+        filteredTasks =
+            filteredTasks.filter(task => {
 
-            const taskDate =
-                new Date(task.date);
+                const taskDate =
+                    new Date(task.date);
 
-            const diffDays =
-                (currentDate - taskDate) /
-                (1000 * 60 * 60 * 24);
+                const diffDays =
+                    (currentDate - taskDate) /
+                    (1000 * 60 * 60 * 24);
 
-            return diffDays <= days;
-        });
+                return diffDays <= days;
+            });
     }
 
     /* PRIORITY FILTER */
 
     if (priorityFilter !== "all") {
 
-        filteredTasks = filteredTasks.filter(task =>
-            task.priority === priorityFilter
-        );
+        filteredTasks =
+            filteredTasks.filter(task =>
+                task.priority === priorityFilter
+            );
     }
 
     /* STATUS FILTER */
 
     if (statusFilter === "completed") {
 
-        filteredTasks = filteredTasks.filter(task =>
-            task.completed
-        );
-
+        filteredTasks =
+            filteredTasks.filter(task =>
+                task.completed
+            );
     }
+
     else if (statusFilter === "past") {
 
-        filteredTasks = filteredTasks.filter(task =>
-            !task.completed && task.date < today
-        );
+        filteredTasks =
+            filteredTasks.filter(task =>
+                task.missed ||
+                (!task.completed &&
+                 task.date < today)
+            );
     }
 
-    /* SORT */
+    /* SORTING */
 
     const priorityOrder = {
         High: 3,
@@ -145,33 +210,41 @@ function renderHistory() {
         filteredTasks.sort((a, b) => {
 
             if (a.date !== b.date) {
-                return new Date(b.date) - new Date(a.date);
+                return new Date(b.date) -
+                       new Date(a.date);
             }
 
-            return b.time.localeCompare(a.time);
+            return convertTo24Hour(b.time)
+                .localeCompare(
+                    convertTo24Hour(a.time)
+                );
         });
-
     }
+
     else if (sortFilter === "oldest") {
 
         filteredTasks.sort((a, b) => {
 
             if (a.date !== b.date) {
-                return new Date(a.date) - new Date(b.date);
+                return new Date(a.date) -
+                       new Date(b.date);
             }
 
-            return a.time.localeCompare(b.time);
+            return convertTo24Hour(a.time)
+                .localeCompare(
+                    convertTo24Hour(b.time)
+                );
         });
-
     }
+
     else if (sortFilter === "high") {
 
         filteredTasks.sort((a, b) =>
             priorityOrder[b.priority] -
             priorityOrder[a.priority]
         );
-
     }
+
     else if (sortFilter === "low") {
 
         filteredTasks.sort((a, b) =>
@@ -199,11 +272,14 @@ function renderHistory() {
 
         const formattedDate =
             new Date(task.date)
-            .toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            });
+                .toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
 
         if (!groups[formattedDate]) {
 
@@ -233,10 +309,10 @@ function renderHistory() {
             container.appendChild(section);
         }
 
-        const taskCard =
+        const card =
             document.createElement("div");
 
-        taskCard.className =
+        card.className =
             "history-task";
 
         const details =
@@ -279,33 +355,50 @@ function renderHistory() {
         const status =
             document.createElement("strong");
 
-        status.textContent =
-            task.completed
-                ? "✓ Completed"
-                : "Past Task";
+        if (task.completed) {
 
-        taskCard.appendChild(details);
-        taskCard.appendChild(status);
+            status.textContent =
+                "✅ Completed";
+        }
+
+        else if (task.missed) {
+
+            status.textContent =
+                "❌ Missed";
+        }
+
+        else {
+
+            status.textContent =
+                "📁 Past Task";
+        }
+
+        card.appendChild(details);
+        card.appendChild(status);
 
         groups[formattedDate]
-            .appendChild(taskCard);
+            .appendChild(card);
     });
 }
 
+/* INITIALIZE */
+
 toggleDatePicker();
 renderHistory();
+
 /* DARK MODE */
 
 const themeToggle =
     document.getElementById("themeToggle");
 
-if(localStorage.getItem("theme")==="dark"){
+if (localStorage.getItem("theme") === "dark") {
+
     document.body.classList.add("dark");
 }
 
-if(themeToggle){
+if (themeToggle) {
 
-    themeToggle.addEventListener("click",()=>{
+    themeToggle.addEventListener("click", () => {
 
         document.body.classList.toggle("dark");
 
