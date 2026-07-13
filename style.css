@@ -934,6 +934,57 @@ body.dark .task-title {
     background: linear-gradient(135deg, #3730a3, #6b21a8, #9d174d);
     border-color: rgba(196, 181, 253, 0.35);
 }
+/* FIX MOBILE TASK FORM */
+
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 16px;
+        border-radius: 22px;
+    }
+
+    .input-group {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group button {
+        width: 100%;
+    }
+
+    .time-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        flex-direction: unset;
+    }
+
+    .time-box,
+    .time-input-box,
+    .time-period-box {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .time-input-box input,
+    .time-box .time-select,
+    .time-period-box .time-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .input-group button {
+        padding: 14px;
+    }
+}
+
     
 
     
